@@ -18,10 +18,14 @@
 package net.daverix.urlforward;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import net.daverix.urlforward.db.UrlForwarderDatabaseHelper;
 
 public class UrlForwarderApplication extends Application {
     private ModifyFilterIdlingResource modifyFilterIdlingResource;
     private final Object modifyFilterIdlingResourceLock = new Object();
+    private SQLiteOpenHelper helper;
 
     public ModifyFilterIdlingResource getModifyFilterIdlingResource() {
         synchronized (modifyFilterIdlingResourceLock) {
@@ -33,5 +37,12 @@ public class UrlForwarderApplication extends Application {
         synchronized (modifyFilterIdlingResourceLock) {
             this.modifyFilterIdlingResource = modifyFilterIdlingResource;
         }
+    }
+
+    public SQLiteOpenHelper getSqliteOpenHelper() {
+        if(helper == null)
+            helper = new UrlForwarderDatabaseHelper(this);
+
+        return helper;
     }
 }

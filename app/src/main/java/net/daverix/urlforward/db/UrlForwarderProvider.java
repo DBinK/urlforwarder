@@ -27,6 +27,7 @@ import android.support.annotation.NonNull;
 
 import net.daverix.urlforward.Constants;
 
+import static net.daverix.urlforward.Constants.TABLE_FILTER;
 import static net.daverix.urlforward.db.UrlForwarderContract.UrlFilters;
 
 public class UrlForwarderProvider extends ContentProvider {
@@ -38,11 +39,11 @@ public class UrlForwarderProvider extends ContentProvider {
         sUriMatcher.addURI(Constants.AUTHORITY, "filter", MATCH_FILTERS);
     }
 
-    private UrlForwardDatabaseHelper mHelper;
+    private UrlForwarderDatabaseHelper mHelper;
 
     @Override
     public boolean onCreate() {
-        mHelper = new UrlForwardDatabaseHelper(getContext());
+        mHelper = new UrlForwarderDatabaseHelper(getContext());
         return true;
     }
 
@@ -60,10 +61,10 @@ public class UrlForwarderProvider extends ContentProvider {
         Cursor cursor = null;
         switch (match) {
             case MATCH_FILTER:
-                cursor = db.query(false, UrlForwardDatabaseHelper.TABLE_FILTER, projection, UrlFilters._ID + "=?", new String[]{uri.getLastPathSegment()}, null, null, sortOrder, null);
+                cursor = db.query(false, TABLE_FILTER, projection, UrlFilters._ID + "=?", new String[]{uri.getLastPathSegment()}, null, null, sortOrder, null);
                 break;
             case MATCH_FILTERS:
-                cursor = db.query(false, UrlForwardDatabaseHelper.TABLE_FILTER, projection, selection, selectionArgs, null, null, sortOrder, null);
+                cursor = db.query(false, TABLE_FILTER, projection, selection, selectionArgs, null, null, sortOrder, null);
                 break;
         }
 
@@ -99,7 +100,7 @@ public class UrlForwarderProvider extends ContentProvider {
 
         switch (match) {
             case MATCH_FILTERS:
-                long id = db.insert(UrlForwardDatabaseHelper.TABLE_FILTER, null, values);
+                long id = db.insert(TABLE_FILTER, null, values);
                 Uri insertedUri = null;
                 if(id > 0) {
                     insertedUri = Uri.withAppendedPath(UrlFilters.CONTENT_URI, String.valueOf(id));
@@ -125,10 +126,10 @@ public class UrlForwarderProvider extends ContentProvider {
         int deleted = 0;
         switch (match) {
             case MATCH_FILTER:
-                deleted = db.delete(UrlForwardDatabaseHelper.TABLE_FILTER, UrlFilters._ID + "=?", new String[] {uri.getLastPathSegment()});
+                deleted = db.delete(TABLE_FILTER, UrlFilters._ID + "=?", new String[] {uri.getLastPathSegment()});
                 break;
             case MATCH_FILTERS:
-                deleted = db.delete(UrlForwardDatabaseHelper.TABLE_FILTER, selection, selectionArgs);
+                deleted = db.delete(TABLE_FILTER, selection, selectionArgs);
                 break;
         }
 
@@ -153,10 +154,10 @@ public class UrlForwarderProvider extends ContentProvider {
         int updated = 0;
         switch (match) {
             case MATCH_FILTER:
-                updated = db.update(UrlForwardDatabaseHelper.TABLE_FILTER, values, UrlFilters._ID + "=?", new String[] {uri.getLastPathSegment()});
+                updated = db.update(TABLE_FILTER, values, UrlFilters._ID + "=?", new String[] {uri.getLastPathSegment()});
                 break;
             case MATCH_FILTERS:
-                updated = db.update(UrlForwardDatabaseHelper.TABLE_FILTER, values, selection, selectionArgs);
+                updated = db.update(TABLE_FILTER, values, selection, selectionArgs);
                 break;
         }
 
